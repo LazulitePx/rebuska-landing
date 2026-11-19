@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parceros · Rebuska</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #EEF1F6;
+    --superficie: #FFFFFF;
+    --tinta: #14182B;
+    --suave: #5B6178;
+    --linea: #D5DAE6;
+    --azul: #2B44E0;
+    --azul-tinta: #FFFFFF;
+    --sol: #FFC83D;
+    --rojo: #C4302B;
+    --verde: #1E7F4F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --fondo: #12151F;
+      --superficie: #1C2030;
+      --tinta: #EDEFF7;
+      --suave: #9CA3BD;
+      --linea: #2E3448;
+      --azul: #6D82FF;
+      --azul-tinta: #0E1122;
+      --sol: #FFC83D;
+      --rojo: #FF7A73;
+      --verde: #5CCB91;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--fondo);
+    color: var(--tinta);
+    line-height: 1.5;
+  }
+  .contenedor { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(2.6rem, 8vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+  h1 span { display: inline-block; background: var(--sol); color: #14182B; padding: 0 0.15em; transform: rotate(-2deg); border-radius: 4px; }
+  header p { margin: 8px 0 0; color: var(--suave); max-width: 40ch; }
+  .contador { font-size: 0.95rem; color: var(--suave); }
+  .contador strong { color: var(--tinta); font-size: 1.4rem; }
+
+  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--superficie); border: 1px solid var(--linea); border-radius: 16px; padding: 22px; }
+  .panel h2 { margin: 0 0 16px; font-size: 1.25rem; }
+  .formulario { position: sticky; top: 20px; }
+  .formulario.editando { border-color: var(--azul); box-shadow: 0 0 0 3px color-mix(in srgb, var(--azul) 25%, transparent); }
+
+  label { display: block; font-weight: 600; font-size: 0.9rem; margin: 12px 0 4px; }
+  input {
+    width: 100%; font: inherit; color: var(--tinta);
+    background: var(--fondo); border: 1px solid var(--linea); border-radius: 10px;
+    padding: 10px 12px;
+  }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+
+  button { font: inherit; font-weight: 600; cursor: pointer; border-radius: 10px; border: 1px solid transparent; padding: 10px 16px; }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .primario { background: var(--azul); color: var(--azul-tinta); width: 100%; margin-top: 18px; }
+  .secundario { background: transparent; color: var(--suave); border-color: var(--linea); width: 100%; margin-top: 8px; }
+
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .busqueda { margin-bottom: 16px; }
+  .busqueda input { background: var(--superficie); padding: 12px 14px; }
+
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  li {
+    background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px;
+    padding: 16px 18px; display: flex; gap: 14px; align-items: center;
+  }
+  .inicial {
+    flex: none; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 800; font-size: 1.1rem;
+    background: var(--sol); color: #14182B;
+  }
+  .datos { flex: 1; min-width: 0; }
+  .datos strong { display: block; font-size: 1.1rem; }
+  .datos .detalle { color: var(--suave); font-size: 0.92rem; }
+  .acciones { display: flex; gap: 6px; flex: none; }
+  .acciones button { padding: 8px 12px; background: transparent; border-color: var(--linea); color: var(--tinta); }
+  .acciones .borrar { color: var(--rojo); }
+  @media (max-width: 480px) {
+    li { flex-wrap: wrap; }
+    .acciones { width: 100%; }
+    .acciones button { flex: 1; }
+  }
+
+  .vacio { text-align: center; color: var(--suave); padding: 40px 20px; border: 2px dashed var(--linea); border-radius: 14px; }
+
+  .aviso {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
+    background: var(--tinta); color: var(--fondo); padding: 12px 18px; border-radius: 12px;
+    opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; max-width: 90vw;
+  }
+  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+  .aviso.error { background: var(--rojo); color: #fff; }
+  @media (prefers-reduced-motion: reduce) { .aviso { transition: none; } }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <header>
+    <div>
+      <h1>Los <span>parceros</span></h1>
+      <p>Directorio de Rebuska: encuentra a alguien que sepa hacer lo que necesitas, o súmate tú.</p>
+    </div>
+    <div class="contador" aria-live="polite"><strong id="total">0</strong> registrados</div>
+  </header>
+
+  <div class="grid">
+    <form class="panel formulario" id="formulario" novalidate>
+      <h2 id="titulo-form">Agregar parcero</h2>
+      <label for="nombre">Nombre</label>
+      <input id="nombre" name="nombre" required maxlength="100" autocomplete="name">
+      <label for="ciudad">Ciudad</label>
+      <input id="ciudad" name="ciudad" maxlength="100" autocomplete="address-level2">
+      <label for="habilidad">¿Qué sabe hacer?</label>
+      <input id="habilidad" name="habilidad" maxlength="200" placeholder="Plomería, diseño, clases de inglés…">
+      <button type="submit" class="primario" id="guardar">Agregar parcero</button>
+      <button type="button" class="secundario" id="cancelar" hidden>Cancelar edición</button>
+    </form>
+
+    <section>
+      <div class="busqueda">
+        <label for="buscar" class="sr">Buscar</label>
+        <input id="buscar" type="search" placeholder="Buscar por nombre, ciudad o habilidad">
+      </div>
+      <ul id="lista"></ul>
+      <div class="vacio" id="vacio" hidden></div>
+    </section>
+  </div>
+</div>
+<div class="aviso" id="aviso" role="status"></div>
+
+<script>
+  const API = "/api/parceros";
+  let parceros = [];
+  let editandoId = null;
+
+  const $ = (id) => document.getElementById(id);
+  const form = $("formulario");
+
+  const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+  function avisar(mensaje, esError = false) {
+    const el = $("aviso");
+    el.textContent = mensaje;
+    el.classList.toggle("error", esError);
+    el.classList.add("visible");
+    clearTimeout(avisar.t);
+    avisar.t = setTimeout(() => el.classList.remove("visible"), 2800);
+  }
+
+  async function pedir(url, opciones = {}) {
+    const res = await fetch(url, {
+      ...opciones,
+      headers: { "Content-Type": "application/json" },
+    });
+    const datos = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(datos.error || "No se pudo completar la acción");
+    return datos;
+  }
+
+  // READ
+  async function cargar() {
+    try {
+      parceros = await pedir(API);
+      parceros.sort((a, b) => (a.creadoEn || "").localeCompare(b.creadoEn || ""));
+      pintar();
+    } catch (e) {
+      $("lista").innerHTML = "";
+      mostrarVacio("No se pudo cargar la lista. Revisa tu conexión y recarga la página.");
+    }
+  }
+
+  function mostrarVacio(texto) {
+    $("vacio").hidden = false;
+    $("vacio").textContent = texto;
+  }
+
+  function pintar() {
+    const filtro = $("buscar").value.trim().toLowerCase();
+    const visibles = parceros.filter((p) =>
+      [p.nombre, p.ciudad, p.habilidad].join(" ").toLowerCase().includes(filtro));
+
+    $("total").textContent = parceros.length;
+    $("vacio").hidden = true;
+
+    if (!parceros.length) return ($("lista").innerHTML = "", mostrarVacio("Todavía no hay parceros. Agrega el primero con el formulario."));
+    if (!visibles.length) return ($("lista").innerHTML = "", mostrarVacio("Nadie coincide con esa búsqueda."));
+
+    $("lista").innerHTML = visibles.map((p) => `
+      <li>
+        <div class="inicial" aria-hidden="true">${escapar((p.nombre || "?")[0].toUpperCase())}</div>
+        <div class="datos">
+          <strong>${escapar(p.nombre)}</strong>
+          <div class="detalle">${escapar(p.habilidad || "Sin habilidad registrada")}${p.ciudad ? " en " + escapar(p.ciudad) : ""}</div>
+        </div>
+        <div class="acciones">
+          <button type="button" data-editar="${escapar(p.id)}">Editar</button>
+          <button type="button" class="borrar" data-borrar="${escapar(p.id)}">Eliminar</button>
+        </div>
+      </li>`).join("");
+  }
+
+  function modoEdicion(p) {
+    editandoId = p ? p.id : null;
+    form.classList.toggle("editando", !!p);
+    $("titulo-form").textContent = p ? "Editar parcero" : "Agregar parcero";
+    $("guardar").textContent = p ? "Guardar cambios" : "Agregar parcero";
+    $("cancelar").hidden = !p;
+    $("nombre").value = p?.nombre || "";
+    $("ciudad").value = p?.ciudad || "";
+    $("habilidad").value = p?.habilidad || "";
+    if (p) { $("nombre").focus(); form.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  }
+
+  // CREATE y UPDATE
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const datos = {
+      nombre: $("nombre").value.trim(),
+      ciudad: $("ciudad").value.trim(),
+      habilidad: $("habilidad").value.trim(),
+    };
+    if (!datos.nombre) { avisar("Escribe un nombre para continuar", true); $("nombre").focus(); return; }
+
+    $("guardar").disabled = true;
+    try {
+      if (editandoId) {
+        await pedir(`${API}/${encodeURIComponent(editandoId)}`, { method: "PUT", body: JSON.stringify(datos) });
+        avisar("Cambios guardados");
+      } else {
+        await pedir(API, { method: "POST", body: JSON.stringify(datos) });
+        avisar(`${datos.nombre} agregado`);
+      }
+      modoEdicion(null);
+      await cargar();
+    } catch (err) {
+      avisar(err.message, true);
+    } finally {
+      $("guardar").disabled = false;
+    }
+  });
+
+  $("cancelar").addEventListener("click", () => modoEdicion(null));
+  $("buscar").addEventListener("input", pintar);
+
+  // Botones de cada parcero: editar y DELETE
+  $("lista").addEventListener("click", async (e) => {
+    const idEditar = e.target.dataset.editar;
+    const idBorrar = e.target.dataset.borrar;
+
+    if (idEditar) modoEdicion(parceros.find((p) => p.id === idEditar));
+
+    if (idBorrar) {
+      const p = parceros.find((x) => x.id === idBorrar);
+      if (!confirm(`¿Eliminar a ${p?.nombre || "este parcero"}?`)) return;
+      e.target.disabled = true;
+      try {
+        await pedir(`${API}/${encodeURIComponent(idBorrar)}`, { method: "DELETE" });
+        if (editandoId === idBorrar) modoEdicion(null);
+        avisar(`${p?.nombre || "Parcero"} eliminado`);
+        await cargar();
+      } catch (err) {
+        avisar(err.message, true);
+        e.target.disabled = false;
+      }
+    }
+  });
+
+  cargar();
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parceros · Computación Distribuida y Paralela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #EEF1F6;
+    --superficie: #FFFFFF;
+    --tinta: #14182B;
+    --suave: #5B6178;
+    --linea: #D5DAE6;
+    --azul: #2B44E0;
+    --azul-tinta: #FFFFFF;
+    --sol: #FFC83D;
+    --verde: #1E7F4F;
+    --pendiente: #A35F00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --fondo: #12151F;
+      --superficie: #1C2030;
+      --tinta: #EDEFF7;
+      --suave: #9CA3BD;
+      --linea: #2E3448;
+      --azul: #6D82FF;
+      --azul-tinta: #0E1122;
+      --verde: #5CCB91;
+      --pendiente: #FFB84D;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--fondo);
+    color: var(--tinta);
+    line-height: 1.55;
+  }
+  .contenedor { max-width: 960px; margin: 0 auto; padding: 40px 20px 72px; }
+  a { color: var(--azul); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 6px; }
+
+  /* Encabezado */
+  .cabecera { margin-bottom: 40px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(3rem, 11vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+  }
+  h1 span { display: inline-block; background: var(--sol); color: #14182B; padding: 0 0.12em; transform: rotate(-2deg); border-radius: 6px; }
+  .cabecera p { margin: 14px 0 0; color: var(--suave); font-size: 1.15rem; max-width: 52ch; }
+  .cabecera .curso { font-size: 0.95rem; margin-top: 8px; }
+
+  .creditos {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 48px;
+  }
+  @media (max-width: 640px) { .creditos { grid-template-columns: 1fr; } }
+  .tarjeta { background: var(--superficie); border: 1px solid var(--linea); border-radius: 16px; padding: 20px 22px; }
+  .tarjeta h2 { margin: 0 0 10px; font-size: 0.95rem; font-weight: 600; color: var(--suave); }
+  .profesor { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+  .integrantes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .integrantes li { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.1rem; padding-right: 14px; }
+  .inicial {
+    width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--sol); color: #14182B; font-weight: 800; flex: none;
+  }
+
+  section { margin-bottom: 48px; }
+  section > h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; margin: 0 0 6px; }
+  section > p { color: var(--suave); margin: 0 0 18px; max-width: 60ch; }
+
+  /* Video */
+  .video { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid var(--linea); }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-vacio {
+    aspect-ratio: 16 / 9; border: 2px dashed var(--linea); border-radius: 16px;
+    display: grid; place-items: center; text-align: center; color: var(--suave); padding: 20px;
+  }
+
+  /* Syllabus */
+  .descarga {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .descarga strong { font-size: 1.2rem; }
+  .descarga span { color: var(--suave); display: block; }
+  .boton {
+    display: inline-block; background: var(--azul); color: var(--azul-tinta); text-decoration: none;
+    font-weight: 600; padding: 12px 20px; border-radius: 10px;
+  }
+
+  /* Servicios */
+  .servicios { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .servicios li { background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; padding: 16px 18px; }
+  .servicios strong { font-size: 1.1rem; display: block; }
+  .servicios .que { color: var(--suave); font-size: 0.95rem; display: block; margin: 2px 0 10px; }
+  .estado { font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .estado::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .listo { color: var(--verde); }
+  .pendiente { color: var(--pendiente); }
+
+  footer { color: var(--suave); font-size: 0.9rem; border-top: 1px solid var(--linea); padding-top: 20px; }
+</style>
+</head>
+<body>
+<main class="contenedor">
+
+  <header class="cabecera">
+    <h1>Parce<span>ros</span></h1>
+    <p>Proyecto de Computación Distribuida y Paralela: web, DNS, base de datos, correo y transferencia de archivos funcionando sobre un dominio propio.</p>
+    <p class="curso">Universidad Antonio Nariño · Ingeniería de Sistemas y Computación · 2026</p>
+  </header>
+
+  <div class="creditos">
+    <div class="tarjeta">
+      <h2>Profesor</h2>
+      <p class="profesor">Raúl Bareño</p>
+    </div>
+    <div class="tarjeta">
+      <h2>Integrantes</h2>
+      <ul class="integrantes" id="integrantes"></ul>
+    </div>
+  </div>
+
+  <section>
+    <h2>Computación paralela y distribuida</h2>
+    <p>Video de referencia sobre cómo varios procesadores y varias máquinas trabajan a la vez para resolver un mismo problema.</p>
+    <div id="video"></div>
+  </section>
+
+  <section>
+    <h2>Syllabus</h2>
+    <div class="tarjeta descarga">
+      <div>
+        <strong>Contenido programático 2026</strong>
+        <span>Computación Distribuida y Paralela, código 50493205. Objetivos, 8 unidades, evaluación y bibliografía.</span>
+      </div>
+      <a class="boton" href="syllabus.pdf" target="_blank" rel="noopener">Abrir syllabus</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Servicios del proyecto</h2>
+    <p>Estado de cada servicio que compone la solución.</p>
+    <ul class="servicios" id="servicios"></ul>
+  </section>
+
+  <footer>rebuska.online</footer>
+</main>
+
+<script>
+  // ====== EDITA AQUÍ ======
+  // Pega el link del video de YouTube (sirve cualquier formato: watch?v=, youtu.be/, shorts/)
+  const VIDEO_URL = "https://www.youtube.com/watch?v=4oMIq4d4pUU";
+
+  const INTEGRANTES = ["Joseph Arévalo", "Santiago Ángel", "Sebastián González"];
+
+  // listo: true = funcionando, false = pendiente
+  const SERVICIOS = [
+    { nombre: "Web", que: "Sitio publicado con dominio propio y HTTPS", listo: true, link: "/" },
+    { nombre: "DNS", que: "Registros del dominio rebuska.online", listo: true },
+    { nombre: "Base de datos", que: "Registro y consulta de datos con CRUD", listo: true, link: "directorio.html" },
+    { nombre: "Correo", que: "Cuentas @rebuska.online para los profesores", listo: false },
+    { nombre: "SFTP", que: "Subida de archivos al servidor", listo: false },
+    { nombre: "SSH", que: "Administración remota segura del servidor", listo: false },
+  ];
+  // ========================
+
+  const escapar = (t) => String(t).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+  // Integrantes
+  document.getElementById("integrantes").innerHTML = INTEGRANTES.map((n) =>
+    `<li><span class="inicial" aria-hidden="true">${escapar(n[0])}</span>${escapar(n)}</li>`).join("");
+
+  // Video
+  function idDeYoutube(url) {
+    const m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+  const idVideo = idDeYoutube(VIDEO_URL);
+  document.getElementById("video").innerHTML = idVideo
+    ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${idVideo}"
+         title="Video sobre computación paralela y distribuida" loading="lazy"
+         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+         allowfullscreen></iframe></div>
+       <p><a href="https://www.youtube.com/watch?v=${idVideo}" target="_blank" rel="noopener">Ver en YouTube</a></p>`
+    : `<div class="video-vacio">Falta el video: pega el link de YouTube en VIDEO_URL dentro de este archivo.</div>`;
+
+  // Servicios
+  document.getElementById("servicios").innerHTML = SERVICIOS.map((s) => `
+    <li>
+      <strong>${s.link ? `<a href="${escapar(s.link)}">${escapar(s.nombre)}</a>` : escapar(s.nombre)}</strong>
+      <span class="que">${escapar(s.que)}</span>
+      <span class="estado ${s.listo ? "listo" : "pendiente"}">${s.listo ? "Funcionando" : "En configuración"}</span>
+    </li>`).join("");
+</script>
+</body>
+</html>
