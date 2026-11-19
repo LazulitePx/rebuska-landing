@@ -77,6 +77,25 @@
   section > h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; margin: 0 0 6px; }
   section > p { color: var(--suave); margin: 0 0 18px; max-width: 60ch; }
 
+  /* Acceso al directorio */
+  .cta {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px;
+    background: var(--azul); color: var(--azul-tinta);
+    border-radius: 20px; padding: 26px 28px; margin-bottom: 40px;
+  }
+  .cta h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2rem); letter-spacing: -0.03em; line-height: 1.1; }
+  .cta p { margin: 6px 0 0; opacity: 0.9; max-width: 44ch; }
+  .cta a {
+    display: inline-block; background: var(--sol); color: #14182B; text-decoration: none;
+    font-weight: 800; font-size: 1.15rem; padding: 16px 26px; border-radius: 14px;
+    box-shadow: 0 4px 0 #C99410; transition: transform .12s, box-shadow .12s;
+  }
+  .cta a:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #C99410; }
+  .cta a:active { transform: translateY(2px); box-shadow: 0 2px 0 #C99410; }
+  .cta a:focus-visible { outline: 3px solid var(--sol); outline-offset: 4px; }
+  @media (max-width: 560px) { .cta a { width: 100%; text-align: center; } }
+  @media (prefers-reduced-motion: reduce) { .cta a { transition: none; } }
+
   /* Video */
   .video { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid var(--linea); }
   .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -114,9 +133,17 @@
 
   <header class="cabecera">
     <h1>Parce<span>ros</span></h1>
-    <p>Proyecto de Computación Distribuida y Paralela: web, DNS, base de datos, correo y transferencia de archivos funcionando sobre un dominio propio.</p>
+    <p>Proyecto de Computación Distribuida y Paralela: web, DNS y base de datos funcionando sobre un dominio propio.</p>
     <p class="curso">Universidad Antonio Nariño · Ingeniería de Sistemas y Computación · 2026</p>
   </header>
+
+  <div class="cta">
+    <div>
+      <h2>Directorio de parceros</h2>
+      <p>Mira quién está registrado, agrega parceros nuevos, edítalos o elimínalos.</p>
+    </div>
+    <a href="/directorio">Agregar parceros</a>
+  </div>
 
   <div class="creditos">
     <div class="tarjeta">
@@ -148,7 +175,7 @@
 
   <section>
     <h2>Servicios del proyecto</h2>
-    <p>Estado de cada servicio que compone la solución.</p>
+    <p>Servicios que componen la solución, todos en funcionamiento.</p>
     <ul class="servicios" id="servicios"></ul>
   </section>
 
@@ -158,7 +185,7 @@
 <script>
   // ====== EDITA AQUÍ ======
   // Pega el link del video de YouTube (sirve cualquier formato: watch?v=, youtu.be/, shorts/)
-  const VIDEO_URL = "https://www.youtube.com/watch?v=4oMIq4d4pUU";
+  const VIDEO_URL = "https://www.youtube.com/watch?v=ePtW8Mva6ns";
 
   const INTEGRANTES = ["Joseph Arévalo", "Santiago Ángel", "Sebastián González"];
 
@@ -166,10 +193,7 @@
   const SERVICIOS = [
     { nombre: "Web", que: "Sitio publicado con dominio propio y HTTPS", listo: true, link: "/" },
     { nombre: "DNS", que: "Registros del dominio rebuska.online", listo: true },
-    { nombre: "Base de datos", que: "Registro y consulta de datos con CRUD", listo: true, link: "directorio.html" },
-    { nombre: "Correo", que: "Cuentas @rebuska.online para los profesores", listo: false },
-    { nombre: "SFTP", que: "Subida de archivos al servidor", listo: false },
-    { nombre: "SSH", que: "Administración remota segura del servidor", listo: false },
+    { nombre: "Base de datos", que: "Registro y consulta de datos con CRUD", listo: true, link: "/directorio" },
   ];
   // ========================
 
