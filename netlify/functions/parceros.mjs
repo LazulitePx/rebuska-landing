@@ -3,7 +3,7 @@ import { getStore } from "@netlify/blobs";
 // Permite llamar la API desde cualquier dispositivo u origen
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -13,6 +13,8 @@ const json = (data, status = 200) =>
     headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
   });
 
+const texto = (valor, max) => String(valor ?? "").trim().slice(0, max);
+
 export default async (req, context) => {
   const store = getStore({ name: "parceros", consistency: "strong" });
   const id = context.params?.id;
@@ -20,8 +22,7 @@ export default async (req, context) => {
   try {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
 
-    // GET /parceros  -> lista todos
-    // GET /parceros/:id -> uno solo
+    // READ: GET /parceros (todos) o GET /parceros/:id (uno)
     if (req.method === "GET") {
       if (id) {
         const parcero = await store.get(id, { type: "json" });
@@ -32,24 +33,44 @@ export default async (req, context) => {
       return json(parceros.filter(Boolean));
     }
 
-    // POST /parceros  body: { "nombre": "...", "ciudad": "...", "habilidad": "..." }
+    // CREATE: POST /parceros
     if (req.method === "POST" && !id) {
       const body = await req.json().catch(() => null);
-      if (!body?.nombre || typeof body.nombre !== "string") {
+      if (!body?.nombre || !texto(body.nombre, 100)) {
         return json({ error: "El campo 'nombre' es obligatorio" }, 400);
       }
       const parcero = {
         id: crypto.randomUUID(),
-        nombre: body.nombre.trim().slice(0, 100),
-        ciudad: String(body.ciudad ?? "").trim().slice(0, 100),
-        habilidad: String(body.habilidad ?? "").trim().slice(0, 200),
+        nombre: texto(body.nombre, 100),
+        ciudad: texto(body.ciudad, 100),
+        habilidad: texto(body.habilidad, 200),
         creadoEn: new Date().toISOString(),
       };
       await store.setJSON(parcero.id, parcero);
       return json(parcero, 201);
     }
 
-    // DELETE /parceros/:id
+    // UPDATE: PUT /parceros/:id (solo cambia los campos que envíes)
+    if (req.method === "PUT" && id) {
+      const actual = await store.get(id, { type: "json" });
+      if (!actual) return json({ error: "Parcero no encontrado" }, 404);
+      const body = await req.json().catch(() => null);
+      if (!body) return json({ error: "Envía un JSON con los campos a cambiar" }, 400);
+      if (body.nombre !== undefined && !texto(body.nombre, 100)) {
+        return json({ error: "El nombre no puede quedar vacío" }, 400);
+      }
+      const actualizado = {
+        ...actual,
+        ...(body.nombre !== undefined && { nombre: texto(body.nombre, 100) }),
+        ...(body.ciudad !== undefined && { ciudad: texto(body.ciudad, 100) }),
+        ...(body.habilidad !== undefined && { habilidad: texto(body.habilidad, 200) }),
+        actualizadoEn: new Date().toISOString(),
+      };
+      await store.setJSON(id, actualizado);
+      return json(actualizado);
+    }
+
+    // DELETE: DELETE /parceros/:id
     if (req.method === "DELETE" && id) {
       const existe = await store.get(id);
       if (!existe) return json({ error: "Parcero no encontrado" }, 404);
@@ -65,4 +86,4 @@ export default async (req, context) => {
 };
 
 // Rutas públicas: rebuska.online/parceros y rebuska.online/parceros/:id
-export const config = { path: ["/parceros", "/parceros/:id"] };
+export const config = { path: ["/api/parceros", "/api/parceros/:id"] };
